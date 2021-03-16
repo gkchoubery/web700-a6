@@ -105,6 +105,18 @@ app.post('/employees/add', async (req, res) => {
     }
 });
 
+app.post('/employee/update', async (req, res) => {
+    try {
+        const { body: data } = req;
+        await serverData.updateEmployee(data)
+        res.redirect('/employees');
+    } catch (e) {
+        res.status(500).send({
+            message: e
+        });
+    }
+});
+
 
 app.get('/managers', (req, res) => {
     try {
@@ -112,6 +124,7 @@ app.get('/managers', (req, res) => {
             .then(managers => res.send(managers))
             .catch(message => res.status(404).send({ message }));
     } catch (e) {
+        console.log(e);
         res.status(500).send({
             message: e.message
         })

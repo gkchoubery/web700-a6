@@ -10,6 +10,24 @@ class Data {
 
 let allData = null;
 
+let cleanData = employeeData => {
+    if (typeof (employeeData.employeeManagerNum) === 'string') {
+        employeeData.employeeManagerNum = employeeData.employeeManagerNum ? parseInt(employeeData.employeeManagerNum) : null;
+    }
+    if (employeeData.employeeNum && typeof (employeeData.employeeNum) === 'string') {
+        employeeData.employeeNum = parseInt(employeeData.employeeNum)
+    }
+    if (employeeData.department && typeof (employeeData.department) === 'string') {
+        employeeData.department = parseInt(employeeData.department)
+    }
+    if (employeeData.isManager && employeeData.isManager === 'on') {
+        employeeData.isManager = true;
+    } else {
+        employeeData.isManager = false;
+    }
+    return employeeData;
+}
+
 /**
  * Promisify readFile function
  * @param {String} path of the file
@@ -127,16 +145,14 @@ module.exports.getDepartmentById = id => {
 module.exports.addEmployee = employeeData => {
     return new Promise(async (resolve, reject) => {
         try {
+            employeeData = cleanData(employeeData);
             if (employeeData.employeeManagerNum) {
-                employeeData.employeeManagerNum = parseInt(employeeData.employeeManagerNum)
                 let manager = await this.getEmployeeByNum(employeeData.employeeManagerNum);
                 if (!manager) {
                     throw new Error('Manager not found');
                 }
             }
-            if (!employeeData.isManager) employeeData.isManager = false;
-            employeeData.department = parseInt(employeeData.department);
-            employeeData.hireDate = moment(employeeData.hireDate, 'YYYY-MM-DD').format('M/D/YYYY')
+            employeeData.hireDate = moment(employeeData.hireDate, ['YYYY-MM-DD', 'M/D/YYYY']).format('M/D/YYYY')
             let employee = Object.assign({}, {
                 employeeNum: allData.employees.length + 1
             }, employeeData);
@@ -148,3 +164,17 @@ module.exports.addEmployee = employeeData => {
     });
 
 }
+
+module.exports.updateEmployee = employeeData => new Promise((resolve, reject) => {
+    employeeData = cleanData(employeeData);
+    let employeeIndex = allData.employees.findIndex(data => data.employeeNum === employeeData.employeeNum);
+    if (employeeIndex > -1) {
+        let updatedEmployee = { ...allData.employees[employeeIndex], ...employeeData };
+        allData.employees[employeeIndex] = updatedEmployee;
+        resolve();
+    } else {
+        this.addEmployee(employeeData)
+            .then(_ => resolve())
+            .catch(e => reject(e));
+    }
+});
