@@ -1,52 +1,88 @@
 /**********************************************************************************
- *   WEB700–Assignment 04*  I declare that this assignment is my own work in 
- * accordance with Seneca  Academic Policy.  No part of this assignment has been 
- * copied manually or electronically from any other source (including 3rd party 
- * web sites) or distributed to other students.
+ *   WEB700–Assignment05
+ *   I declare that this assignment is my own work in 
+ *   accordance with Seneca  Academic Policy.  No part of this assignment has been 
+ *   copied manually or electronically from any other source (including 3rd party 
+ *   web sites) or distributed to other students.
  * 
- * Name: Geet Kumar Choubey Student ID: 155876196 Date: 9 Mar 2021
+ *   Name: Geet Kumar Choubey Student ID: 155876196 Date: 16 Mar 2021
  * 
- * Online (Heroku) Link: https://fast-mountain-05477.herokuapp.com/
+ *   Online (Heroku) Link: 
  *******************************************************************************/
 
 const express = require('express');
 const bodyParser = require('body-parser');
 const fs = require('fs');
 const path = require('path');
+const exphbs = require('express-handlebars');
 
 const app = express();
 
 const serverData = require('./modules/serverDataModule');
+const { url } = require('inspector');
 
 const PORT = process.env.PORT || 8080;
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
+app.engine('.hbs', exphbs({
+    extname: '.hbs',
+    helpers: {
+        navLink: (url, options) => {
+            return `
+                <li class="nav-item ${url == app.locals.activeRoute ? 'active' : ''}">
+                    <a class="nav-link" href="${url}">${options.fn(this)}</a>
+                </li>
+                `
+        },
+        equal: function (lValue, rValue, options) {
+            if (arguments.length < 3) {
+                throw new Error("Handlebars Helper equal needs 2 parameters");
+            }
+            if (lValue !== rValue) {
+                return options.inverse(this);
+            } else {
+                return options.fn(this);
+            }
+        }
+    }
+}));
+app.set('view engine', '.hbs');
+
+app.use(function (req, res, next) {
+    let route = req.baseUrl + req.path;
+    app.locals.activeRoute = (route == "/") ? "/" : route.replace(/\/$/, "");
+    next();
+});
 
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'views/home.html'));
+    res.render('home');
 });
 
 app.get('/about', (req, res) => {
-    res.sendFile(path.join(__dirname, 'views/about.html'));
+    res.render('about');
 });
 
 app.get('/htmlDemo', (req, res) => {
-    res.sendFile(path.join(__dirname, 'views/htmlDemo.html'));
+    res.render('htmlDemo');
 });
 
 app.get('/employees', (req, res) => {
     try {
         let departmentQuery = req.query.department;
-        if (!departmentQuery) {
-            serverData.getAllEmployees()
-                .then(employees => res.send(employees))
-                .catch(message => res.status(404).send({ message }));;
-        } else {
-            serverData.getEmployeesByDepartment(parseInt(departmentQuery))
-                .then(employees => res.send(employees))
-                .catch(message => res.status(404).send({ message }));
-        }
+        let queryResolver = () => {
+            if (!departmentQuery) {
+                return serverData.getAllEmployees();
+            } else {
+                return serverData.getEmployeesByDepartment(parseInt(departmentQuery));
+            }
+        };
+        queryResolver(departmentQuery).then(data => {
+            res.render('employees', { employees: data });
+        }).catch(message => {
+            res.render("employees", { message: "no results" });
+        });
+
     } catch (e) {
         res.status(500).send({
             message: e.message
@@ -55,7 +91,7 @@ app.get('/employees', (req, res) => {
 });
 
 app.get('/employees/add', (req, res) => {
-    res.sendFile(path.join(__dirname, 'views/addEmployee.html'));
+    res.render('addEmployee');
 });
 
 app.post('/employees/add', async (req, res) => {
@@ -85,8 +121,21 @@ app.get('/managers', (req, res) => {
 app.get('/departments', (req, res) => {
     try {
         serverData.getDepartments()
-            .then(departments => res.send(departments))
+            .then(departments => res.render('departments', { departments }))
             .catch(message => res.status(404).send({ message }));
+    } catch (e) {
+        res.status(500).send({
+            message: e.message
+        })
+    }
+});
+
+app.get('/department/:num', (req, res) => {
+    try {
+        let departmentId = parseInt(req.params.num);
+        serverData.getDepartmentById(departmentId)
+            .then(department => res.render('department', { department }))
+            .catch(message => res.render('department', { message }));
     } catch (e) {
         res.status(500).send({
             message: e.message
@@ -98,8 +147,8 @@ app.get('/employee/:num', (req, res) => {
     try {
         let employeeNum = parseInt(req.params.num);
         serverData.getEmployeeByNum(employeeNum)
-            .then(employee => res.send(employee))
-            .catch(message => res.status(404).send({ message }));
+            .then(employee => res.render('employee', { employee }))
+            .catch(message => res.render('employee', { message }));
     } catch (e) {
         res.status(500).send({
             message: e.message

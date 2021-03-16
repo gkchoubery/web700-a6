@@ -110,6 +110,20 @@ module.exports.getEmployeeByNum = num => {
     });
 }
 
+module.exports.getDepartmentById = id => {
+    return new Promise((resolve, reject) => {
+        let departmentFound = allData.departments.find(department =>
+            department.departmentId === id);
+        if (departmentFound) {
+            resolve(departmentFound);
+        } else {
+            reject(`No results for department with Department ID: ${id}`);
+        }
+    });
+}
+
+
+
 module.exports.addEmployee = employeeData => {
     return new Promise(async (resolve, reject) => {
         try {
