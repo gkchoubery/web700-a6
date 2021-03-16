@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>WEB700</title>
+	<meta charset="UTF-8" />
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+		integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<link rel="stylesheet" href="/css/theme.css">
+</head>
+
+<body>
+	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+		<a class="navbar-brand" href="/">Geet Choubey</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+			aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+
+		<div class="collapse navbar-collapse" id="navbarSupportedContent">
+			<ul class="navbar-nav mr-auto">
+				<li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+				<li class="nav-item"><a class="nav-link" href="/about">About</a></li>
+				<li class="nav-item active"><a class="nav-link" href="/htmlDemo">Html Demo</a></li>
+				<li class="nav-item"><a class="nav-link" href="/employees/add">Add Employee</a></li>
+			</ul>
+			<ul class="navbar-nav ml-auto">
+				<li class="nav-item"><a class="nav-link" href="/employees">Employees</a></li>
+				<li class="nav-item"><a class="nav-link" href="/managers">Managers</a></li>
+				<li class="nav-item"><a class="nav-link" href="/departments">Departments</a></li>
+			</ul>
+		</div>
+	</nav>
+
+	<div class="container">
+		<div class="row">
+			<main class="col-md-12">
+
+				<!-- Start your code here -->
+				<div class="container">
+					<header class="row pt-5">
+						<h2>HTML Elements Example</h2>
+					</header>
+
+					<div class="pt-4">
+						<div>
+							<h4>Tabulating Data</h4>
+							<div class="pt-3">
+								<table style="width: 100%;">
+									<caption>Table 1: Phone Numbers</caption>
+									<thead>
+										<tr>
+											<th>Name</th>
+											<th colspan="2">Telephone Numbers</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td>Justin</td>
+											<td>(768) 577 3467</td>
+											<td>(768) 574 8765</td>
+										</tr>
+										<tr>
+											<td>Ryan</td>
+											<td>(688) 876 3456</td>
+											<td>(688) 987 2345</td>
+										</tr>
+										<tr>
+											<td>Alison</td>
+											<td>(787) 747 3300</td>
+											<td>(787) 688 9860</td>
+										</tr>
+									</tbody>
+									<tfoot>
+										<tr>
+											<th>Total Entries</th>
+											<td colspan="2">3</td>
+										</tr>
+									</tfoot>
+								</table>
+								<table style="width: 100%;">
+									<caption>Table 2: Major Cities of Ontario</caption>
+									<tr>
+										<th>Province</th>
+										<td class="text-center">Ontario</td>
+									</tr>
+									<tr>
+										<th rowspan="2">Cities</th>
+										<td class="p-1">Toronto</td>
+									</tr>
+									<tr>
+										<td class="p-1">Ottawa</td>
+									</tr>
+								</table>
+							</div>
+							<p class="caption">All data appearing in this table is fictious. Any resemblance to real world
+								is purely coincidental.</p>
+						</div>
+						<hr>
+						<div class="mt-4">
+							<h4>Listing Items</h4>
+							<div class="pt-3">
+								<h5>Beverages</h5>
+								<ol>
+									<li>Coffee</li>
+									<li>Tea
+										<ul>
+											<li>Black tea</li>
+											<li>Green tea</li>
+										</ul>
+									</li>
+									<li>Milk</li>
+									<li>Juice</li>
+									<li>Beer</li>
+								</ol>
+							</div>
+							<p class="caption">Thirsty much? Try one from the list.</p>
+						</div>
+						<hr>
+						<div class="mt-4">
+							<h4>Display Images</h4>
+							<div class="pt-3">
+								<h5>Mother Nature</h5>
+								<div class="row text-center">
+									<div class="col-md-6">
+										<img src="https://upload.wikimedia.org/wikipedia/commons/6/69/Snowboarder_in_halfpipe.jpg"
+											alt="Image of a snowboarder" />
+									</div>
+									<div class="col-md-6">
+										<img src="https://cdn.pixabay.com/photo/2021/01/17/07/35/dog-5924174_1280.jpg"
+											alt="Dog running in snow" />
+									</div>
+								</div>
+								<div class="row text-center">
+									<div class="offset-md-3 col-md-6">
+										<img src="https://cdn.pixabay.com/photo/2020/12/03/12/35/giraffe-5800387_1280.jpg"
+											alt="A giraffe standing tall" />
+									</div>
+								</div>
+								<p class="caption">See the beauty of mother nature unfold before you.</p>
+							</div>
+							<hr>
+							<div class="mt-4">
+								<h4>Playing Music in HTML</h4>
+								<div class="pt-3">
+									<h5>Classical Music</h5>
+									<div class="text-center">
+										<audio controls>
+											<source
+												src="https://pat-crawford-sdds.netlify.app/shared/winter-2021/web700/A3/Track03.ogg"
+												type="audio/ogg">
+											<source
+												src="https://pat-crawford-sdds.netlify.app/shared/winter-2021/web700/A3/Track03.mp3"
+												type="audio/mpeg">
+											Your browser does not support the audio element.
+										</audio>
+									</div>
+								</div>
+								<p class="caption">Make yourself comfortable with some soothing classical melodies.</p>
+							</div>
+							<hr>
+							<div class="mt-4">
+								<h4>Netflix and Chill?</h4>
+								<div class="pt-3">
+									<h5>Chilling with a Bear</h5>
+									<div class="text-center">
+										<video width="320" height="240" controls>
+											<source
+												src="https://pat-crawford-sdds.netlify.app/shared/winter-2021/web700/A3/movie.mp4"
+												type="video/mp4">
+											<source
+												src="https://pat-crawford-sdds.netlify.app/shared/winter-2021/web700/A3/movie.ogg"
+												type="video/ogg">
+											<source
+												src="https://pat-crawford-sdds.netlify.app/shared/winter-2021/web700/A3/movie.webm"
+												type="video/webm">
+											Your browser does not support the video tag.
+										</video>
+									</div>
+								</div>
+								<p class="caption">Have you seen The Revenant? Spoiler alert!! JK</p>
+							</div>
+							<div class="pb-5"></div>
+						</div>
+					</div>
+				</div>
+
+
+				<!-- End your code here  -->
+
+			</main>
+		</div>
+	</div>
+
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+		integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+		crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+		integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+		crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+		integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+		crossorigin="anonymous"></script>
+</body>
+
+</html>

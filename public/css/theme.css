@@ -1,0 +1,138 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@1,700;1,900&family=Shippori+Mincho+B1:wght@500&display=swap');
+
+body, html {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: medium;
+    background: #C3D2D0; /* fallback color */
+    background: linear-gradient( to bottom, #D2C3C6, #C3D2D0);
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+}
+
+.bg-light {
+    background-color: #D2C3C6 !important;
+    -webkit-box-shadow: 5px 5px 5px 0px rgba(0,0,0,0.1);
+    -moz-box-shadow: 5px 5px 5px 0px rgba(0,0,0,0.1);
+    box-shadow: 5px 5px 5px 0px rgba(0,0,0,0.1);
+}
+
+.navbar-brand {
+    color: #613a41 !important;
+    text-shadow: 2px 2px #aaaaaa;
+    font-family: 'Roboto', sans-serif;
+    font-size: xx-large;
+}
+
+.nav-link {
+    color: #613a41 !important;
+    font-family: 'Roboto', sans-serif;
+    font-size: medium;
+}
+.nav-item.active > .nav-link {
+    color: #63857F !important;
+    text-decoration: underline;
+}
+.nav-link:hover {
+    color: #63857F !important;
+    -webkit-box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.2);
+    -moz-box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.2);
+    box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.2);
+}
+
+h1, h2, h3 {
+    font-family: 'Shippori Mincho B1', serif;
+}
+
+h4 {
+    text-decoration: underline;
+}
+
+h5, h6 {
+    text-decoration: underline wavy;
+}
+
+a:not(.nav-link) {
+    color: #C9367E;
+}
+
+a:not(.nav-link):hover {
+    background-color: #36C981;
+}
+
+legend {
+    padding: 1em 0.5em 1em 1em;
+    color: #613a41;
+    font-weight: 700;
+    text-shadow: 2px 4px #aaaaaa;
+}
+
+table {
+    margin-top: 1em;
+}
+
+tbody tr:nth-child(odd) td {
+    background-color: #D7E1DF;
+}
+
+tbody tr:nth-child(even) td {
+    background-color: transparent;
+}
+
+table,
+th,
+td {
+    border: 1px dotted black;
+    border-collapse: collapse;
+}
+
+
+th, td {
+    padding: 5px;
+    text-align: center;
+}
+
+table>caption {
+    text-align: center;
+}
+
+tfoot>tr>td {
+    font-weight: bold;
+}
+
+.caption {
+    margin-top: 1em;
+    text-align: center;
+    padding-bottom: 1em;
+    color: #999;
+}
+
+img,
+video {
+    height: 300px;
+    margin: 2em;
+    object-fit: cover;
+}
+
+img {
+    width: 100%;
+}
+
+video,
+audio {
+    width: auto;
+}
+
+.btn-primary {
+    background: linear-gradient(to right, teal, #613a41);
+    transition: none;
+    -webkit-box-shadow: 7px 7px 7px 0px rgba(0,0,0,0.2);
+    -moz-box-shadow: 7px 7px 7px 0px rgba(0,0,0,0.2);
+    box-shadow: 7px 7px 7px 0px rgba(0,0,0,0.2);
+}
+
+.btn-primary:hover {
+    background: #613a41;
+}
