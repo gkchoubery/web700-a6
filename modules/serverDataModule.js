@@ -165,10 +165,17 @@ module.exports.addEmployee = employeeData => {
 
 }
 
-module.exports.updateEmployee = employeeData => new Promise((resolve, reject) => {
+module.exports.updateEmployee = employeeData => new Promise(async (resolve, reject) => {
     employeeData = cleanData(employeeData);
     let employeeIndex = allData.employees.findIndex(data => data.employeeNum === employeeData.employeeNum);
     if (employeeIndex > -1) {
+        if (employeeData.employeeManagerNum) {
+            try {
+                await this.getEmployeeByNum(employeeData.employeeManagerNum);
+            } catch(e) {
+                return reject(e);
+            }
+        }
         let updatedEmployee = { ...allData.employees[employeeIndex], ...employeeData };
         allData.employees[employeeIndex] = updatedEmployee;
         resolve();
