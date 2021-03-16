@@ -12,14 +12,12 @@
 
 const express = require('express');
 const bodyParser = require('body-parser');
-const fs = require('fs');
 const path = require('path');
 const exphbs = require('express-handlebars');
 
 const app = express();
 
 const serverData = require('./modules/serverDataModule');
-const { url } = require('inspector');
 
 const PORT = process.env.PORT || 8080;
 
