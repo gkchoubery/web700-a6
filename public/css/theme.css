@@ -54,7 +54,7 @@ h5, h6 {
     text-decoration: underline wavy;
 }
 
-a:not(.nav-link) {
+a:not(.nav-link):not(.btn-danger) {
     color: #C9367E;
 }
 
@@ -131,8 +131,9 @@ audio {
     -webkit-box-shadow: 7px 7px 7px 0px rgba(0,0,0,0.2);
     -moz-box-shadow: 7px 7px 7px 0px rgba(0,0,0,0.2);
     box-shadow: 7px 7px 7px 0px rgba(0,0,0,0.2);
+    color: white !important;
 }
 
 .btn-primary:hover {
-    background: #613a41;
+    background: #613a41 !important;
 }

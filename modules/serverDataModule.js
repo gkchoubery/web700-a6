@@ -1,14 +1,5 @@
-const fs = require('fs');
 const moment = require('moment');
-
-class Data {
-    constructor(employees, departments) {
-        this.employees = employees;
-        this.departments = departments;
-    }
-}
-
-let allData = null;
+const db = require('../models');
 
 let cleanData = employeeData => {
     if (typeof (employeeData.employeeManagerNum) === 'string') {
@@ -29,42 +20,17 @@ let cleanData = employeeData => {
 }
 
 /**
- * Promisify readFile function
- * @param {String} path of the file
- * @param {String} encoding to be used for opening the file
- * @returns {Promise<Buffer>} returns the data as a buffer
- */
-function readFile(path, encoding = 'utf-8') {
-    return new Promise((resolve, reject) => {
-        fs.readFile(path, encoding, (err, data) => {
-            if (err) {
-                return reject(err);
-            }
-            resolve(data);
-        })
-    });
-}
-
-/**
  * Initialize function will invoke the promisified readFile function and parse the JSON data
  * Instantiate Data class and store the JSON
  * @returns {Promise<any>} 
  */
-module.exports.initialize = function () {
-    return new Promise(async (resolve, reject) => {
-        try {
-            let employeeDataFromFile = await readFile('./data/employees.json')
-                .then(data => JSON.parse(data));
-            let departmentDataFromFile = await readFile('./data/departments.json')
-                .then(data => JSON.parse(data));
-            allData = new Data(employeeDataFromFile, departmentDataFromFile);
-            resolve();
-        } catch (e) {
-            e.mesage = 'Error while trying to read JSON data';
-            reject(e);
-        }
-
-    });
+module.exports.initialize = async () => {
+    try {
+        await db.sequelize.sync();
+    } catch (e) {
+        console.error(e);
+        throw new Error('Error: Unable to sync the database');
+    }
 }
 
 
@@ -72,11 +38,9 @@ module.exports.initialize = function () {
  * Method will return all employees else will throw an error
  * @returns {Promse<any>} employeeData || errorMessage
  */
-module.exports.getAllEmployees = function () {
-    return new Promise((resolve, reject) => {
-        const allEmployees = allData.employees;
-        if (allEmployees && allEmployees.length > 0) return resolve(allEmployees);
-        reject('No results returned for \'Employees\'');
+module.exports.getAllEmployees = () => {
+    return db.employee.findAll({
+        raw: true
     });
 }
 
@@ -84,104 +48,131 @@ module.exports.getAllEmployees = function () {
  * Method will return all employees who have a manger
  * @returns {Promse<any>} employeeData || errorMessage
  */
-module.exports.getManagers = function () {
-    return new Promise((resolve, reject) => {
-        const allManagers = allData.employees.filter(employee => !!employee.isManager);
-        if (allManagers && allManagers.length > 0) return resolve(allManagers);
-        reject('No results returned for \'Managers\'');
+module.exports.getManagers = () => {
+    return db.employee.findAll({
+        where: {
+            isManager: true
+        },
+        raw: true
     });
 }
 
 /**
- * Method will return all employees else will throw an error
- * @returns {Promse<any>} departmentData || errorMessage
+ * Method will return a manager
+ * @returns {Promse<any>} employeeData
  */
-module.exports.getDepartments = function () {
-    return new Promise((resolve, reject) => {
-        const allDepartments = allData.departments;
-        if (allDepartments && allDepartments.length > 0) return resolve(allDepartments);
-        reject('No results returned for \'Departments\'');
+module.exports.getManager = async id => {
+    return db.employee.findOne({
+        where: {
+            employeeNum: id,
+            isManager: true
+        }
+    });
+}
+
+/**
+ * Method will return all departments
+ * @returns {Promse<any>} departmentData
+ */
+module.exports.getDepartments = () => {
+    return db.department.findAll({
+        raw: true,
+        order: ["departmentId"]
     });
 }
 
 module.exports.getEmployeesByDepartment = department => {
-    return new Promise((resolve, reject) => {
-        let employees = allData.employees.filter(employee =>
-            employee.department === department);
-        if (employees.length > 0) {
-            resolve(employees);
-        } else {
-            reject(`No results for employees in Department# ${department}`);
-        }
+    return db.employee.findAll({
+        where: {
+            department
+        },
+        raw: true
     });
 }
 
 module.exports.getEmployeeByNum = num => {
-    return new Promise((resolve, reject) => {
-        let employeeFound = allData.employees.find(employee =>
-            employee.employeeNum === num);
-        if (employeeFound) {
-            resolve(employeeFound);
-        } else {
-            reject(`No results for employee with Employee ID: ${num}`);
-        }
+    return db.employee.findOne({
+        where: {
+            employeeNum: num
+        },
+        raw: true
     });
 }
 
 module.exports.getDepartmentById = id => {
-    return new Promise((resolve, reject) => {
-        let departmentFound = allData.departments.find(department =>
-            department.departmentId === id);
-        if (departmentFound) {
-            resolve(departmentFound);
-        } else {
-            reject(`No results for department with Department ID: ${id}`);
-        }
+    return db.department.findOne({
+        where: {
+            departmentId: id
+        },
+        raw: true
     });
 }
 
 
 
-module.exports.addEmployee = employeeData => {
-    return new Promise(async (resolve, reject) => {
-        try {
-            employeeData = cleanData(employeeData);
-            if (employeeData.employeeManagerNum) {
-                let manager = await this.getEmployeeByNum(employeeData.employeeManagerNum);
-                if (!manager) {
-                    throw new Error('Manager not found');
-                }
-            }
-            employeeData.hireDate = moment(employeeData.hireDate, ['YYYY-MM-DD', 'M/D/YYYY']).format('M/D/YYYY')
-            let employee = Object.assign({}, {
-                employeeNum: allData.employees.length + 1
-            }, employeeData);
-            allData.employees.push(employee);
-            resolve();
-        } catch (e) {
-            reject(e);
-        }
-    });
-
-}
-
-module.exports.updateEmployee = employeeData => new Promise(async (resolve, reject) => {
+module.exports.addEmployee = async employeeData => {
     employeeData = cleanData(employeeData);
-    let employeeIndex = allData.employees.findIndex(data => data.employeeNum === employeeData.employeeNum);
-    if (employeeIndex > -1) {
-        if (employeeData.employeeManagerNum) {
-            try {
-                await this.getEmployeeByNum(employeeData.employeeManagerNum);
-            } catch(e) {
-                return reject(e);
-            }
+    if (employeeData.employeeManagerNum) {
+        let manager = await this.getManager(employeeData.employeeManagerNum);
+        if (!manager) {
+            throw new Error('Manager not found');
         }
-        let updatedEmployee = { ...allData.employees[employeeIndex], ...employeeData };
-        allData.employees[employeeIndex] = updatedEmployee;
-        resolve();
-    } else {
-        this.addEmployee(employeeData)
-            .then(_ => resolve())
-            .catch(e => reject(e));
     }
-});
+    employeeData.hireDate = moment(employeeData.hireDate, ['YYYY-MM-DD', 'M/D/YYYY']).format('M/D/YYYY');
+    await db.employee.create(employeeData);
+}
+
+module.exports.updateEmployee = async employeeData => {
+    employeeData = cleanData(employeeData);
+    let employee = await db.employee.findOne({
+        where: {
+            employeeNum: employeeData.employeeNum
+        },
+        raw: true
+    });
+    if (employee) {
+        if (employeeData.employeeManagerNum) {
+            let manager = await this.getManager(employeeData.employeeManagerNum);
+            if (!manager) throw new Error(`Manager not found with ID ${employeeData.employeeManagerNum}`)
+        }
+        await db.employee.update(employeeData, {
+            where: {
+                employeeNum: employeeData.employeeNum
+            }
+        })
+    } else {
+        await this.addEmployee(employeeData);
+    }
+}
+
+module.exports.deleteEmployee = employeeNum => {
+    return db.employee.destroy({
+        where: {
+            employeeNum
+        }
+    });
+}
+
+module.exports.addDepartment = ({ departmentName }) => {
+    return db.department.create({
+        departmentName
+    });
+}
+
+module.exports.updateDepartment = ({ departmentId, departmentName }) => {
+    return db.department.update({
+        departmentName
+    }, {
+        where: {
+            departmentId
+        }
+    });
+}
+
+module.exports.deleteDepartment = departmentId => {
+    return db.department.destroy({
+        where: {
+            departmentId
+        }
+    });
+}

@@ -1,17 +1,17 @@
 /**********************************************************************************
- *   WEB700–Assignment05
+ *   WEB700–Assignment06
  *   I declare that this assignment is my own work in 
  *   accordance with Seneca  Academic Policy.  No part of this assignment has been 
  *   copied manually or electronically from any other source (including 3rd party 
  *   web sites) or distributed to other students.
  * 
- *   Name: Geet Kumar Choubey Student ID: 155876196 Date: 16 Mar 2021
+ *   Name: Geet Kumar Choubey Student ID: 155876196 Date: 5 Apr 2021
  * 
  *   Online (Heroku) Link: https://radiant-island-69672.herokuapp.com/
  *******************************************************************************/
 
+require('dotenv').config();
 const express = require('express');
-const bodyParser = require('body-parser');
 const path = require('path');
 const exphbs = require('express-handlebars');
 
@@ -21,7 +21,7 @@ const serverData = require('./modules/serverDataModule');
 
 const PORT = process.env.PORT || 8080;
 
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.engine('.hbs', exphbs({
     extname: '.hbs',
@@ -65,107 +65,10 @@ app.get('/htmlDemo', (req, res) => {
     res.render('htmlDemo');
 });
 
-app.get('/employees', (req, res) => {
-    try {
-        let departmentQuery = req.query.department;
-        let queryResolver = () => {
-            if (!departmentQuery) {
-                return serverData.getAllEmployees();
-            } else {
-                return serverData.getEmployeesByDepartment(parseInt(departmentQuery));
-            }
-        };
-        queryResolver(departmentQuery).then(data => {
-            res.render('employees', { employees: data });
-        }).catch(message => {
-            res.render("employees", { message: "no results" });
-        });
-
-    } catch (e) {
-        res.status(500).send({
-            message: e.message
-        })
-    }
-});
-
-app.get('/employees/add', (req, res) => {
-    res.render('addEmployee');
-});
-
-app.post('/employees/add', async (req, res) => {
-    try {
-        await serverData.addEmployee(req.body);
-        res.redirect('/employees');
-    } catch (e) {
-        res.status(500).send({
-            message: e
-        });
-    }
-});
-
-app.post('/employee/update', async (req, res) => {
-    try {
-        const { body: data } = req;
-        await serverData.updateEmployee(data)
-        res.redirect('/employees');
-    } catch (e) {
-        res.status(500).send({
-            message: e
-        });
-    }
-});
-
-
-app.get('/managers', (req, res) => {
-    try {
-        serverData.getManagers()
-            .then(managers => res.send(managers))
-            .catch(message => res.status(404).send({ message }));
-    } catch (e) {
-        console.log(e);
-        res.status(500).send({
-            message: e.message
-        })
-    }
-});
-
-app.get('/departments', (req, res) => {
-    try {
-        serverData.getDepartments()
-            .then(departments => res.render('departments', { departments }))
-            .catch(message => res.status(404).send({ message }));
-    } catch (e) {
-        res.status(500).send({
-            message: e.message
-        })
-    }
-});
-
-app.get('/department/:num', (req, res) => {
-    try {
-        let departmentId = parseInt(req.params.num);
-        serverData.getDepartmentById(departmentId)
-            .then(department => res.render('department', { department }))
-            .catch(message => res.render('department', { message }));
-    } catch (e) {
-        res.status(500).send({
-            message: e.message
-        })
-    }
-});
-
-app.get('/employee/:num', (req, res) => {
-    try {
-        let employeeNum = parseInt(req.params.num);
-        serverData.getEmployeeByNum(employeeNum)
-            .then(employee => res.render('employee', { employee }))
-            .catch(message => res.render('employee', { message }));
-    } catch (e) {
-        res.status(500).send({
-            message: e.message
-        })
-    }
-});
+app.use('/employees', require('./routes/employees'));
+app.use('/employee', require('./routes/employee'));
+app.use('/departments', require('./routes/departments'));
+app.use('/department', require('./routes/department'));
 
 app.all('*', (req, res) => {
     res.status(404).sendFile(path.join(__dirname, 'views/notFound.html'));
