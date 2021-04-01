@@ -40,7 +40,8 @@ module.exports.initialize = async () => {
  */
 module.exports.getAllEmployees = () => {
     return db.employee.findAll({
-        raw: true
+        raw: true,
+        order: ["employeeNum"]
     });
 }
 
@@ -53,7 +54,8 @@ module.exports.getManagers = () => {
         where: {
             isManager: true
         },
-        raw: true
+        raw: true,
+        order: ["employeeNum"]
     });
 }
 
@@ -86,7 +88,8 @@ module.exports.getEmployeesByDepartment = department => {
         where: {
             department
         },
-        raw: true
+        raw: true,
+        order: ["employeeNum"]
     });
 }
 
