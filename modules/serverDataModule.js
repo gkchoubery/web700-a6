@@ -33,6 +33,12 @@ module.exports.initialize = async () => {
     }
 }
 
+module.exports.seedData = async () => {
+    await db.sequelize.sync({ force: true });
+    await db.department.bulkCreate(require('../data/departments.json'));
+    await db.employee.bulkCreate(require('../data/employees.json').splice(0, 20));
+}
+
 
 /**
  * Method will return all employees else will throw an error

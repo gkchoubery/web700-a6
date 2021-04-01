@@ -65,6 +65,16 @@ app.get('/htmlDemo', (req, res) => {
     res.render('htmlDemo');
 });
 
+app.get('/seedData', async (req, res) => {
+    try {
+        await serverData.seedData();
+    } catch (e) {
+        res.status(500).send({
+            message: e.message
+        });
+    }
+});
+
 app.use('/employees', require('./routes/employees'));
 app.use('/employee', require('./routes/employee'));
 app.use('/departments', require('./routes/departments'));
