@@ -33,10 +33,17 @@ module.exports.initialize = async () => {
     }
 }
 
-module.exports.seedData = async () => {
+module.exports.seedData = async (seed = false) => {
     await db.sequelize.sync({ force: true });
-    await db.department.bulkCreate(require('../data/departments.json'));
-    await db.employee.bulkCreate(require('../data/employees.json').splice(0, 20));
+    if (seed) {
+        await db.department.bulkCreate(require('../data/departments.json').map(department => ({
+            departmentName: department.departmentName
+        })));
+        await db.employee.bulkCreate(require('../data/employees.json').splice(0, 20).map(employee => {
+            delete employee.employeeNum
+            return employee;
+        }));
+    }
 }
 
 
