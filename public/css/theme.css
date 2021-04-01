@@ -92,6 +92,8 @@ td {
 th, td {
     padding: 5px;
     text-align: center;
+    word-wrap: break-word;
+    max-width: 10vw;
 }
 
 table>caption {
