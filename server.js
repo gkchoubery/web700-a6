@@ -68,6 +68,7 @@ app.get('/htmlDemo', (req, res) => {
 app.get('/seedData', async (req, res) => {
     try {
         await serverData.seedData();
+        res.redirect('/');
     } catch (e) {
         res.status(500).send({
             message: e.message
